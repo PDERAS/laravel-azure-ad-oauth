@@ -15,12 +15,13 @@ Pderas\AzureSocialite\ServiceProvider::class,
 Publish the config and override any defaults:
 
 ```
-php artisan vendor publish
+php artisan vendor:publish --tag=azure-oauth
 ```
 
 Add the necessary env vars:
 
 ```
+AZURE_AD_TENANT_ID=XXXX
 AZURE_AD_CLIENT_ID=XXXX
 AZURE_AD_CLIENT_SECRET=XXXX
 ```

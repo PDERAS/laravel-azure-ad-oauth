@@ -15,7 +15,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->publishes([
             __DIR__.'/config/azure-oath.php' => config_path('azure-oath.php'),
-        ]);
+        ], 'azure-oauth');
 
         $this->mergeConfigFrom(
             __DIR__.'/config/azure-oath.php', 'azure-oath'

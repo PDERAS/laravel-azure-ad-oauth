@@ -1,5 +1,7 @@
 <?php
 
+use App\Providers\RouteServiceProvider;
+
 return [
     'routes' => [
         // The middleware to wrap the auth routes in.
@@ -13,18 +15,27 @@ return [
         // The app route that SSO will redirect to.
         // There should be no reason to override this.
         'callback' => 'login/microsoft/callback',
+
+        // Azure URL endpoints.
+        // The {tenant} value in the path of the request can be used to control
+        // who can sign into the application and can be defined below in `credentials.tenant`.
+        // Valid values are `common`, `organizations`, `consumers`, and tenant identifiers
+        'authorization_url' => 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize',
+        'token_url'         => 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token',
     ],
+
     'credentials' => [
-        'client_id' => env('AZURE_AD_CLIENT_ID', ''),
+        'tenant'        => env('AZURE_AD_TENANT_ID', 'common'),
+        'client_id'     => env('AZURE_AD_CLIENT_ID', ''),
         'client_secret' => env('AZURE_AD_CLIENT_SECRET', ''),
-        'redirect' => Request::root().'/login/microsoft/callback'
+        'redirect'      => '/login/microsoft/callback'
     ],
 
     // The route to redirect the user to upon login.
-    'redirect_on_login' => '/home',
+    'redirect_on_login' => RouteServiceProvider::HOME,
 
     // The User Eloquent class.
-    'user_class' => '\\App\\User',
+    'user_class' => '\\App\\Models\\User',
 
     // How much time should be left before the access
     // token expires to attempt a refresh.
@@ -37,9 +48,10 @@ return [
     // Do not include the id field above.
     // AzureUserField => LaravelUserField
     'user_map' => [
-        'name' => 'name',
-        'email' => 'email',
-        'name' => 'name',
-        'name' => 'name',
+        'idToken'           => 'azure_token',
+        'givenName'         => 'first_name',
+        'surname'           => 'last_name',
+        'email'             => 'email',
+        'userPrincipalName' => 'user_principal_name',
     ]
 ];
