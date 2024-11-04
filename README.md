@@ -2,14 +2,8 @@
 
 ## Installation
 
-`composer require pderas/laravel-azure-ad-oauth`
-
-If you are using Laravel 5.5 or greater, the service provider will be detected and installed by Laravel automatically. Otherwise you will need to add the service provider and the facade (optional) to the `config/app.php` file:
-
-```php
-Pderas\AzureSocialite\ServiceProvider::class,
-// ...
-'AzureUser' => Pderas\AzureSocialite\AzureUserFacade::class,
+```
+composer require pderas/laravel-azure-ad-oauth
 ```
 
 Publish the config and override any defaults:
