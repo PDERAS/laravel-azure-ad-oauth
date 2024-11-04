@@ -1,30 +1,12 @@
 <?php
 
-namespace hakkahio\AzureSocialite\Middleware;
+namespace Pderas\AzureSocialite\Middleware;
 
 use Illuminate\Contracts\Auth\Guard;
 use \Illuminate\Contracts\Auth\Authenticatable;
 
 class Authenticate implements Guard
 {
-    // public function handle($request, Closure $next, ...$guards)
-    // {
-    //     try{
-    //         $azure_user = app('azure-user');
-    //         $expires_in = $azure_user->get()->expiresIn;
-    //     }catch(\Exception $e){
-    //         auth()->logout();
-
-    //         throw new AuthenticationException('Unauthenticated.', $guards);
-    //     }
-
-    //     if($expires_in < 3580){
-    //         $azure_user->refreshAccessToken();
-    //     }
-
-    //     return parent::handle($request, $next, $guards);
-    // }
-
     protected $user;
 
     /**
@@ -87,8 +69,7 @@ class Authenticate implements Guard
      */
     public function validate(array $credentials = [])
     {
-        // This is handles by SSO
-
+        // This is handled by SSO
         return true;
     }
 

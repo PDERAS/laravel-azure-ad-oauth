@@ -1,6 +1,6 @@
 <?php
 
-namespace hakkahio\AzureSocialite;
+namespace Pderas\AzureSocialite;
 
 class UserFactory
 {

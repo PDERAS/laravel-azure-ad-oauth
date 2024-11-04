@@ -1,5 +1,5 @@
 {
-    "name": "hakkahio/laravel-azure-ad-oauth-laravel-8",
+    "name": "pderas/laravel-azure-ad-oauth",
     "description": "Provides single-sign-on ability to Microsoft Azure Active Directory enabled apps. This package is updated to work with Laravel 8, as the forked package had depency issues with guzzle.",
     "require": {
         "laravel/framework": ">5.4",
@@ -9,20 +9,24 @@
     "authors": [
         {
             "name": "Patrick Stephan"
+        },
+        {
+            "name": "Brock Roadhouse",
+            "email": "brock.roadhouse@fabledsolutions.com"
         }
     ],
     "autoload": {
         "psr-4": {
-            "hakkahio\\AzureSocialite\\": "src/"
+            "Pderas\\AzureSocialite\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "hakkahio\\AzureSocialite\\ServiceProvider"
+                "Pderas\\AzureSocialite\\ServiceProvider"
             ],
             "aliases": {
-                "AzureUser": "hakkahio\\AzureSocialite\\AzureUserFacade"
+                "AzureUser": "Pderas\\AzureSocialite\\AzureUserFacade"
             }
         }
     }
