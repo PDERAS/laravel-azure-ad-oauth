@@ -22,10 +22,16 @@ class ServiceProvider extends BaseServiceProvider
         );
 
         $this->app['Laravel\Socialite\Contracts\Factory']->extend('azure-oauth', function($app){
-            return $app['Laravel\Socialite\Contracts\Factory']->buildProvider(
+            $provider = $app['Laravel\Socialite\Contracts\Factory']->buildProvider(
                 'Pderas\AzureSocialite\AzureOauthProvider',
                 config('azure-oath.credentials')
             );
+
+            if (config('azure-oath.use_pkce', true)) {
+                $provider->enablePKCE();
+            }
+
+            return $provider;
         });
 
         $this->app['router']->group(['middleware' => config('azure-oath.routes.middleware')], function($router){

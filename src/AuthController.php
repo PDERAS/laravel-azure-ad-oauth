@@ -20,10 +20,6 @@ class AuthController extends Controller
 
         auth()->login($authUser, true);
 
-        // session([
-        //     'azure_user' => $user
-        // ]);
-
         return redirect(
             config('azure-oath.redirect_on_login')
         );

@@ -44,7 +44,9 @@ class AzureUser
     {
         $guzzle = new Client();
 
-        $response = $guzzle->post('https://login.microsoftonline.com/common/oauth2/token', [
+        $url = AzureUrlBuilder::buildTokenUrl();
+
+        $response = $guzzle->post($url, [
             'form_params' => [
                 'client_id' => config('azure-oath.credentials.client_id'),
                 'scope' => 'user.read',

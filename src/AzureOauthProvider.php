@@ -6,41 +6,53 @@ use Illuminate\Support\Arr;
 use Laravel\Socialite\Two\User;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class AzureOauthProvider extends AbstractProvider implements ProviderInterface
 {
     const IDENTIFIER = 'AZURE_OAUTH';
-    protected $scopes = ['User.Read'];
+    protected $scopes = ['.default'];
     protected $scopeSeparator = ' ';
+    protected $scopePrefix = '';
 
     protected function getAuthUrl($state)
     {
-        $base_url = config('azure-oath.routes.authorization_url');
-
-        $url = str_replace('{tenant}', config('azure-oath.credentials.tenant'), $base_url);
+        $url = AzureUrlBuilder::buildAuthUrl($state);
 
         return $this->buildAuthUrlFromBase($url, $state);
     }
 
-
     protected function getTokenUrl()
     {
-        $url = config('azure-oath.routes.token_url');
+        return AzureUrlBuilder::buildTokenUrl();
+    }
 
-        return str_replace('{tenant}', config('azure-oath.credentials.tenant'), $url);
+    /**
+     * Get the headers for the access token request.
+     *
+     * @param  string  $code
+     * @return array
+     */
+    protected function getTokenHeaders($code)
+    {
+        return [
+            'Accept' => 'application/json',
+            'Origin' => $this->redirectUrl,
+        ];
     }
 
     protected function getTokenFields($code)
     {
         return array_merge(parent::getTokenFields($code), [
             'grant_type' => 'authorization_code',
-            'resource' => 'https://graph.microsoft.com',
         ]);
     }
 
     protected function getUserByToken($token)
     {
-        $response = $this->getHttpClient()->get('https://graph.microsoft.com/v1.0/me/', [
+        $url = AzureUrlBuilder::buildUserByToken();
+
+        $response = $this->getHttpClient()->get($url, [
             'headers' => [
                 'Authorization' => 'Bearer '.$token,
             ],
