@@ -7,11 +7,21 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+    /**
+     * Redirect the user to the Azure OAuth provider.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function redirectToOauthProvider()
     {
         return Socialite::driver('azure-oauth')->redirect();
     }
 
+    /**
+     * Callback function for the Azure OAuth provider.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function handleOauthResponse()
     {
         $user = Socialite::driver('azure-oauth')->user();
@@ -25,17 +35,23 @@ class AuthController extends Controller
         );
     }
 
+    /**
+     * Find or create a user in the database.
+     *
+     * @param  \Laravel\Socialite\Two\User  $user
+     * @return \Illuminate\Database\Eloquent\Model
+     */
     protected function findOrCreateUser($user)
     {
         $user_class = config('azure-oath.user_class');
-        $authUser = $user_class::where(config('azure-oath.user_id_field'), $user->id)->first();
+        $auth_user = $user_class::where(config('azure-oath.user_id_field'), $user->id)->first();
 
-        if ($authUser) {
-            return $authUser;
+        if ($auth_user) {
+            return $auth_user;
         }
 
-        $UserFactory = new UserFactory();
+        $user_factory = new UserFactory();
 
-        return $UserFactory->convertAzureUser($user);
+        return $user_factory->convertAzureUser($user);
     }
 }

@@ -10,11 +10,26 @@ use Laravel\Socialite\Two\InvalidStateException;
 
 class AzureOauthProvider extends AbstractProvider implements ProviderInterface
 {
-    const IDENTIFIER = 'AZURE_OAUTH';
+    /**
+     * The scopes being requested.
+     *
+     * @var array
+     */
     protected $scopes = ['.default'];
-    protected $scopeSeparator = ' ';
-    protected $scopePrefix = '';
 
+    /**
+     * The scope separator.
+     *
+     * @var string
+     */
+    protected $scopeSeparator = ' ';
+
+    /**
+     * Get the authentication URL for the provider.
+     *
+     * @param  string  $state
+     * @return string
+     */
     protected function getAuthUrl($state)
     {
         $url = AzureUrlBuilder::buildAuthUrl($state);
@@ -22,6 +37,11 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
         return $this->buildAuthUrlFromBase($url, $state);
     }
 
+    /**
+     * Get the token URL for the provider.
+     *
+     * @return string
+     */
     protected function getTokenUrl()
     {
         return AzureUrlBuilder::buildTokenUrl();
@@ -41,6 +61,12 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
         ];
     }
 
+    /**
+     * Get the POST fields for the token request.
+     *
+     * @param  string  $code
+     * @return array
+     */
     protected function getTokenFields($code)
     {
         return array_merge(parent::getTokenFields($code), [
@@ -48,6 +74,12 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
         ]);
     }
 
+    /**
+     * Get the raw user for the given access token.
+     *
+     * @param  string  $token
+     * @return array
+     */
     protected function getUserByToken($token)
     {
         $url = AzureUrlBuilder::buildUserByToken();
@@ -58,9 +90,16 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
             ],
         ]);
 
+        logger('user response', ['response' => $response->getBody()]);
+
         return json_decode($response->getBody(), true);
     }
 
+    /**
+     * Get the User instance for the authenticated user.
+     *
+     * @return \Laravel\Socialite\Contracts\User
+     */
     public function user()
     {
         if ($this->hasInvalidState()) {
@@ -80,6 +119,12 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
                     ->setRefreshToken(Arr::get($response, 'refresh_token'));
     }
 
+    /**
+     * Map the raw user array to a Socialite User instance.
+     *
+     * @param  array  $user
+     * @return \Laravel\Socialite\Two\User
+     */
     protected function mapUserToObject(array $user)
     {
         return (new User())->setRaw($user)->map([

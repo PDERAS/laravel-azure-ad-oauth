@@ -7,6 +7,11 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AzureUser
 {
+    /**
+     * The user
+     * 
+     * @var \Laravel\Socialite\Two\User|null
+     */
     protected $user;
 
     public function __construct($user)
@@ -14,6 +19,11 @@ class AzureUser
         $this->user = $user;
     }
 
+    /**
+     * Get the user.
+     *
+     * @return \Laravel\Socialite\Two\User
+     */
     public function get()
     {
         $this->user->setExpiresIn($this->user->expiresAt - time());
@@ -21,6 +31,11 @@ class AzureUser
         return $this->user;
     }
 
+    /**
+     * Get the user's roles.
+     *
+     * @return array
+     */
     public function roles()
     {
         $tokens = explode('.', $this->user->idToken);
@@ -28,6 +43,12 @@ class AzureUser
         return json_decode(static::urlsafeB64Decode($tokens[1]))->roles;
     }
 
+    /**
+     * Decode a URL-safe base64 string.
+     *
+     * @param  string  $input
+     * @return string
+     */
     public static function urlsafeB64Decode($input)
     {
         $remainder = strlen($input) % 4;
@@ -40,6 +61,11 @@ class AzureUser
         return base64_decode(strtr($input, '-_', '+/'));
     }
 
+    /**
+     * Refresh the access token.
+     *
+     * @return \Laravel\Socialite\Two\User
+     */
     public function refreshAccessToken()
     {
         $guzzle = new Client();
