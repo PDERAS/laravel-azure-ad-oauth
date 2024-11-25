@@ -22,6 +22,8 @@ return [
         // Valid values are `common`, `organizations`, `consumers`, and tenant identifiers
         'authorization_url' => 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize',
         'token_url'         => 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token',
+        'user_token'        => 'https://graph.microsoft.com/v1.0/me/',
+        'user_roles'        => 'https://graph.microsoft.com/v1.0/me/appRoleAssignments',
     ],
 
     'credentials' => [
@@ -43,6 +45,9 @@ return [
 
     // The users table database column to store the user SSO ID.
     'user_id_field' => 'azure_id',
+
+    // Whether to include the user roles in the user object.
+    'include_roles' => false,
 
     // How to map azure user fields to Laravel user fields.
     // Do not include the id field above.

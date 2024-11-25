@@ -31,7 +31,7 @@ class AuthController extends Controller
         auth()->login($authUser, true);
 
         return redirect(
-            config('azure-oath.redirect_on_login')
+            config('azure-oauth.redirect_on_login')
         );
     }
 
@@ -43,8 +43,8 @@ class AuthController extends Controller
      */
     protected function findOrCreateUser($user)
     {
-        $user_class = config('azure-oath.user_class');
-        $auth_user = $user_class::where(config('azure-oath.user_id_field'), $user->id)->first();
+        $user_class = config('azure-oauth.user_class');
+        $auth_user = $user_class::where(config('azure-oauth.user_id_field'), $user->id)->first();
 
         if ($auth_user) {
             return $auth_user;

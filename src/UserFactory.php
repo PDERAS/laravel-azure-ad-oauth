@@ -9,14 +9,14 @@ class UserFactory
 
     public function __construct()
     {
-        $this->config = config('azure-oath');
+        $this->config = config('azure-oauth');
     }
 
     public function convertAzureUser($azure_user)
     {
-        $user_class = config('azure-oath.user_class');
-        $user_map = config('azure-oath.user_map');
-        $id_field = config('azure-oath.user_id_field');
+        $user_class = $this->config['user_class'];
+        $user_map = $this->config['user_map'];
+        $id_field = $this->config['user_id_field'];
 
         $new_user = new $user_class;
         $new_user->$id_field = $azure_user->id;
@@ -28,7 +28,8 @@ class UserFactory
         $callback = static::$user_callback;
 
         if($callback && is_callable($callback)){
-            $callback($new_user);
+            $roles = $this->config['include_roles'] ? $azure_user->roles : [];
+            $callback($new_user, $roles);
         }
 
         $new_user->save();

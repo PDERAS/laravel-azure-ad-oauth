@@ -38,8 +38,9 @@ auth()->user();
 If you need to set additional user fields when the user model is created at login, you may provide a callback via the `UserFactory::userCallback()` method. A good place to do so would be in your AppServiceProvider's `boot` method:
 
 ```php
-\Pderas\AzureSocialite\UserFactory::userCallback(function($new_user){
+\Pderas\AzureSocialite\UserFactory::userCallback(function($new_user, $roles){
     $new_user->api_token = str_random(60);
+    $new_user->syncRoles($roles);
 });
 ```
 
