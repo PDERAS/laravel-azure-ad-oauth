@@ -12,9 +12,9 @@ class AzureUrlBuilder
      */
     public static function buildAuthUrl($state)
     {
-        $base_url = config('azure-oath.routes.authorization_url');
+        $base_url = config('azure-oauth.routes.authorization_url');
 
-        return str_replace('{tenant}', config('azure-oath.credentials.tenant'), $base_url);
+        return str_replace('{tenant}', config('azure-oauth.credentials.tenant'), $base_url);
     }
 
     /**
@@ -24,9 +24,9 @@ class AzureUrlBuilder
      */
     public static function buildTokenUrl()
     {
-        $url = config('azure-oath.routes.token_url');
+        $url = config('azure-oauth.routes.token_url');
 
-        return str_replace('{tenant}', config('azure-oath.credentials.tenant'), $url);
+        return str_replace('{tenant}', config('azure-oauth.credentials.tenant'), $url);
     }
 
     /**
@@ -36,6 +36,6 @@ class AzureUrlBuilder
      */
     public static function buildUserByToken()
     {
-       return config('azure-oath.routes.user_token', 'https://graph.microsoft.com/v1.0/me/');
+       return config('azure-oauth.routes.user_token');
     }
 }
