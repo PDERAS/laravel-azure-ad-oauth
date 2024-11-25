@@ -46,6 +46,9 @@ return [
     // The users table database column to store the user SSO ID.
     'user_id_field' => 'azure_id',
 
+    // Whether to include the user roles in the user object.
+    'include_roles' => false,
+
     // How to map azure user fields to Laravel user fields.
     // Do not include the id field above.
     // AzureUserField => LaravelUserField

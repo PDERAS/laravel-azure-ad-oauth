@@ -38,4 +38,14 @@ class AzureUrlBuilder
     {
        return config('azure-oauth.routes.user_token');
     }
+
+    /**
+     * Build the user roles URL.
+     *
+     * @return string
+     */
+    public static function buildUserRolesUrl()
+    {
+       return config('azure-oauth.routes.user_roles');
+    }
 }

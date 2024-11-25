@@ -84,15 +84,22 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
     {
         $url = AzureUrlBuilder::buildUserByToken();
 
-        $response = $this->getHttpClient()->get($url, [
-            'headers' => [
-                'Authorization' => 'Bearer '.$token,
-            ],
-        ]);
+        return $this->sendApiRequest($url, $token);
+    }
 
-        logger('user response', ['response' => $response->getBody()]);
+    /**
+     * Get the raw user roles for the given access token.
+     *
+     * @param  string  $access_token
+     * @return array
+     */
+    protected function getAppRoleAssignments($token)
+    {
+        $url = AzureUrlBuilder::buildUserRolesUrl();
 
-        return json_decode($response->getBody(), true);
+        $result = $this->sendApiRequest($url, $token);
+
+        return $result['value'];
     }
 
     /**
@@ -107,13 +114,16 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
         }
 
         $response = $this->getAccessTokenResponse($this->getCode());
+        $token = Arr::get($response, 'access_token');
 
-        $user = $this->mapUserToObject($this->getUserByToken(
-            $token = Arr::get($response, 'access_token')
-        ));
+        $user = $this->mapUserToObject($this->getUserByToken($token));
 
         $user->idToken = Arr::get($response, 'id_token');
         $user->expiresAt = time() + Arr::get($response, 'expires_in');
+
+        if (config('azure-oauth.include_roles')) {
+            $user->roles = $this->getAppRoleAssignments($token);
+        }
 
         return $user->setToken($token)
                     ->setRefreshToken(Arr::get($response, 'refresh_token'));
@@ -143,5 +153,24 @@ class AzureOauthProvider extends AbstractProvider implements ProviderInterface
             'surname'           => $user['surname'],
             'userPrincipalName' => $user['userPrincipalName'],
         ]);
+    }
+
+    /**
+     * Send a request to the given URL.
+     * 
+     * @param string $url
+     * @param string $token
+     * @return array
+     */
+    protected function sendApiRequest($url, $token)
+    {
+        $response = $this->getHttpClient()->get($url, [
+            'headers' => [
+                'Authorization' => "Bearer {$token}",
+                'Accept' => 'application/json',
+            ]
+        ]);
+
+        return json_decode($response->getBody(), true);
     }
 }
